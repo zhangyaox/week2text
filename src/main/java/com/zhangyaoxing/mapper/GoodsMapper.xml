@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhangyaoxing.mapper.GoodsMapper">
+	<insert id="addGoods">
+		INSERT INTO t_goods (id,name,price,sales) VALUES 
+		<foreach collection="list" item="li" separator=",">
+			(#{li.id},#{li.name},#{li.price},#{li.sales})
+		</foreach>
+	</insert>
+	
+	<select id="selectGoods" resultType="com.zhangyaoxing.entity.Goods">
+		SELECT * FROM t_goods 
+		<where>
+			
+			<if test="null!=vo.beginprice and vo.beginprice!=''">
+				price>=#{vo.beginprice} 
+			</if>
+			<if test="null!=vo.endprice and vo.endprice!=''">
+				and price&lt;=#{vo.endprice}
+			</if>
+			<if test="null!=vo.beginsales and vo.beginsales!=0">
+				and sales>=#{vo.beginsales} 
+			</if>
+			<if test="null!=vo.endsales and vo.endsales!=0">
+				AND sales&lt;=#{vo.endsales}
+			</if>
+		</where>
+		<if test="null!=vo.sortingtype and null!=vo.sort">
+			ORDER BY ${vo.sortingtype} ${vo.sort}
+		</if>
+	</select>
+</mapper>
